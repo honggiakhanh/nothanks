@@ -60,7 +60,7 @@ function App() {
       <button onClick={()=> setToggleRule(!toggleRule)}>Rule</button>
       {toggleRule ? <Rule/> : null}
       <h4>No Thanks!</h4>
-      {players.length < 7 ? (
+      {players.length < 5 ? (
         <form onSubmit={addPlayer}>
           <input
             placeholder="name"
