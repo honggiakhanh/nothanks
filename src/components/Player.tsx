@@ -35,7 +35,7 @@ const Player = ({
           ))}
       </div>
       <div>
-        {round >= currentCard.cards.length ? null : players.length < 3 || players.length > 7 ? null : currentCard.turn % 4 === player.id ? (
+        {round >= currentCard.cards.length ? null : players.length < 3 ? null : currentCard.turn % players.length === player.id ? (
           <CurrentCard
             currentCard={currentCard}
             setCurrentCard={setCurrentCard}

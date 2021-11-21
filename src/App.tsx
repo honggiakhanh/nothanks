@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { PlayerI, CurrentCardI } from './types/types'
-import Player from "./components/Player";
+import { PlayerI, CurrentCardI } from "./types/types";
+import Player from './components/Player';
+import Rule from './components/Rule'
 
 const shuffle = (arr: number[]): number[] => {
   for (var i = arr.length - 1; i > 0; i--) {
@@ -17,26 +18,27 @@ const cards = shuffle([
   24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
 ]).splice(0, 24);
 
-const countScore = (arr: number[]): number=> {
-  let score = 0
-  for(let i=0; i<arr.length; i++) {
-    if(arr[i] !== arr[i-1]+1) {
-      score+=arr[i]
+const countScore = (arr: number[]): number => {
+  let score = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] !== arr[i - 1] + 1) {
+      score += arr[i];
     }
   }
-  return score
-}
+  return score;
+};
 
 function App() {
   const [players, setPlayers] = useState<PlayerI[]>([]);
-  const [nameInput, setNameInput] = useState<string>('');
-  const [round, setRound] = useState<number>(0)
+  const [nameInput, setNameInput] = useState<string>("");
+  const [round, setRound] = useState<number>(0);
   const [currentCard, setCurrentCard] = useState<CurrentCardI>({
     cards: cards,
     value: cards[round],
     token: 0,
-    turn: 0
-  })
+    turn: 0,
+  });
+  const [toggleRule, setToggleRule] = useState<boolean>(false);
 
   const handleNameInputChange = (e: any) => {
     e.preventDefault();
@@ -48,36 +50,50 @@ function App() {
       id: Math.max(players.length),
       name: nameInput,
       deck: [],
-      token: 11
-    }
-    setPlayers(players.concat(newPlayer))
+      token: 11,
+    };
+    setPlayers(players.concat(newPlayer));
   };
 
   return (
     <div>
-      {cards.map((card) => (
-        <>{card} </>
-      ))}
-      <div>round: {round}</div>
-      <div>turn: {currentCard.turn}</div>
-      <form onSubmit={addPlayer}>
-        <input
-          placeholder="name"
-          value={nameInput}
-          onChange={handleNameInputChange}
-        />
-        <button>Add Player</button>
-      </form>
+      <button onClick={()=> setToggleRule(!toggleRule)}>Rule</button>
+      {toggleRule ? <Rule/> : null}
+      <h4>No Thanks!</h4>
+      {players.length < 7 ? (
+        <form onSubmit={addPlayer}>
+          <input
+            placeholder="name"
+            value={nameInput}
+            onChange={handleNameInputChange}
+          />
+          <button>Add Player</button>
+        </form>
+      ) : null}
+
       <div>
         {round >= cards.length ? <div>end game</div> : null}
-        --- Game ---
-        {players.map(player => (
-          <Player player={player} players={players} setPlayers={setPlayers} currentCard={currentCard} setCurrentCard={setCurrentCard} round={round} setRound={setRound}/>
+        {players.map((player) => (
+          <Player
+            player={player}
+            players={players}
+            setPlayers={setPlayers}
+            currentCard={currentCard}
+            setCurrentCard={setCurrentCard}
+            round={round}
+            setRound={setRound}
+          />
         ))}
       </div>
-      {round >= cards.length ? <div>{
-          players.map(player => <div>{player.name} score: {countScore(player.deck)-player.token}</div>)
-        }</div> : null}
+      {round >= cards.length ? (
+        <div>
+          {players.map((player) => (
+            <div>
+              {player.name} score: {countScore(player.deck) - player.token}
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
